@@ -1,0 +1,242 @@
+@extends('auth.giao-dien-dk-hp.master')
+@section('title') ĐĂNG KÝ HỌC PHẦN @endsection
+@section('content')
+
+    <div class="content-wrapper" style="min-height: 251px;">
+
+        <div class="container">
+
+            <section class="content-header">
+                <h1>
+                    Đăng ký lớp học phần
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a href="#">Đăng ký...</a></li>
+                </ol>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Tìm kiếm</h3>
+                    </div>
+                    <form role="form">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <select id="hocKy" class="form-control">
+                                        @foreach($hoc_ky as $item)
+                                            <option value="{{$item->id_hoc_ky}}">{{$item->ten_hoc_ky . ' ' . $item->ma_nam_hoc}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <select id="hocKy" class="form-control">
+                                        <option value="1">Đợt 1</option>
+                                        <option value="2">Đợt 2</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <select id="locTheo" class="form-control">
+                                        <option value="0">Lọc theo học phần đề xuất</option>
+                                        <option value="1">Lọc theo các môn dự kiến</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm theo mã môn học">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:10px">
+                                <div class="col-xs-offset-10 col-xs-2">
+                                    <button class="btn btn-primary btn-block">Tìm kiếm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box box-default">
+                    <div class="box-body">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <table class="table table-striped" id="bang">
+                                    <thead>
+                                    <tr>
+                                        <th>Mã lớp học phần</th>
+                                        <th>Học phần</th>
+                                        <th style="width: 100px">Số TC(LT/TH)</th>
+                                        <th style="width: 100px">Số lượng</th>
+                                        <th>Giảng viên</th>
+                                        <th style="width: 100px">Đăng ký</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($lop_hoc_phan as $item)
+                                        <tr>
+                                            <td>{{$item->ma_lop_hoc_phan}}</td>
+                                            <td>{{$item->ten_hoc_phan}}</td>
+                                            <td>{{$item->tin_chi_lt}} / {{$item->tin_chi_th}}</td>
+                                            <td>{{\App\Models\DangKyHocPhanModel::soLuongHocVien($item->id_lop_hoc_phan)}}/{{$item->so_luong}}</td>
+                                            <td>{{$item->ho . $item->ten}}</td>
+                                            <td>
+                                                @if(\App\Models\DangKyHocPhanModel::kiemTraDangKy(session()->get('id_hoc_vien'), $item->id_lop_hoc_phan) > 0)
+                                                    <button type="button" class="btn btn-block btn-success disabled">Đã đăng ký</button>
+                                                @elseif($item->tin_chi_th > 0)
+                                                    <button data="{{toAttrJson($item)}}" type="button" class="btn btn-block btn-success btnDangKyKem">Đăng ký</button>
+                                                @else
+                                                    <button data="{{$item->id_lop_hoc_phan}}" type="button" class="btn btn-block btn-success btnDangKy">Đăng ký</button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </section>
+            <!-- /.content -->
+
+
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="modalDangKyKem">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-bold">Đăng ký lớp học kèm</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped" id="tableMonHocKem">
+                                <thead>
+                                <tr>
+                                    <th>Mã lớp học phần</th>
+                                    <th>Tên học phần</th>
+                                    <th style="width: 100px">Số lượng</th>
+                                    <th style="width: 200px">Giảng viên</th>
+                                    <th style="width: 100px">Đăng ký</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnDangKyLopHocKem">Đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function () {
+            var DANG_KY_LOP_HOC_PHAN = "{{action('App\Http\Controllers\DangKyHocPhanController@dangKyHocPhan')}}";
+            var DANG_KY_LOP_HOC_PHAN_KEM = "{{action('App\Http\Controllers\DangKyHocPhanController@dangKyHocPhanKem')}}";
+            var GET_LOP_THUC_HANH = "{{action('App\Http\Controllers\DangKyHocPhanController@getLopThucHanh')}}";
+            var ID_LOP_HOC_PHAN_LY_THUYET = 0;
+
+            $('#bang').dataTable(
+                {
+                    responsize: true,
+                }
+            );
+
+            $('#btnDangKyLopHocKem').on('click', function()
+            {
+                var id_lop_hoc_phan = $("input[name='idLopHocPhan']:checked").val();
+                console.log(id_lop_hoc_phan);
+                $.ajax({
+                    url: DANG_KY_LOP_HOC_PHAN_KEM,
+                    type: "PUT",
+                    data: {
+                        'id_lop_hoc_phan_thuc_hanh': id_lop_hoc_phan,
+                        'id_lop_hoc_phan_ly_thuyet' : ID_LOP_HOC_PHAN_LY_THUYET,
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Đăng ký học phần thành công!");
+                            setTimeout(function () {
+                            }, 500);
+                        }
+                        else {
+                            toastr.error(result.message, "Đăng ký học phần thất bại!");
+                        }
+                    }
+                });
+            });
+
+            $('.btnDangKyKem').on('click', function () {
+                var data = JSON.parse($(this).attr('data'));
+                var table = $("#tableMonHocKem");
+                ID_LOP_HOC_PHAN_LY_THUYET = data.id_lop_hoc_phan;
+                $.ajax({
+                    url: GET_LOP_THUC_HANH,
+                    type: "POST",
+                    data: {
+                        'id_hoc_phan': data.id_hoc_phan
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success('', "Lấy thông tin học phần thực hành thành công!");
+                            table.find('tbody').empty();
+                            for(var key in result.message)
+                            {
+                                var item = result.message[key];
+                                table.find('tbody').append('<tr>' +
+                                    '<td>'+item.ma_lop_hoc_phan+'</td>' +
+                                    '<td>'+item.ten_hoc_phan+'</td>' +
+                                    '<td>'+item.so_luong+'</td>' +
+                                    '<td>'+item.ho+' '+item.ten+'</td>' +
+                                    '<td><input name="idLopHocPhan" value="'+item.id_lop_hoc_phan+'" type="radio" class="idLopHocPhan"></input></td>' +
+                                    '</tr>');
+                            }
+                        }
+                        else {
+                            toastr.error(result.message, "Lấy thông tin học phần thực hành thất bại!");
+                        }
+                    }
+                });
+                $('#modalDangKyKem').modal('show');
+            });
+
+            $('.btnDangKy').on('click', function () {
+                var id_lop_hoc_phan = $(this).attr('data');
+                $.ajax({
+                    url: DANG_KY_LOP_HOC_PHAN,
+                    type: "PUT",
+                    data: {
+                        'id_lop_hoc_phan': id_lop_hoc_phan
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Đăng ký học phần thành công!");
+                            setTimeout(function () {
+                            }, 500);
+                        }
+                        else {
+                            toastr.error(result.message, "Đăng ký học phần thất bại!");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+@endsection

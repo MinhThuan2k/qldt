@@ -1,0 +1,29 @@
+select DISTINCT ma_lop_hoc_phan, tin_chi_th, hoc_phan.id_hoc_phan, ten_hoc_phan, concat(tin_chi_lt, '/', tin_chi_th) as tin_chi, (select count(id_hoc_vien) as count from dot_dang_ky_chi_tiet where id_lop_hoc_phan = lop_hoc_phan.id_lop_hoc_phan) as so_luong_dang_ky, so_luong, concat(giang_vien.ho, ' ', giang_vien.ten) as ho_ten, lop_hoc_phan.id_lop_hoc_phan, hoc_ky.id_hoc_ky, tiet_ca, ngay_hoc 
+            from lop_hoc_phan, hoc_phan, thoi_khoa_bieu, giang_vien, hoc_ky, dot_dang_ky, thoi_gian,`chuyen_nganh`, `hoc_vien`, `hoc_phan_theo_ctdt`, `chuong_trinh_dao_tao`
+            where lop_hoc_phan.id_hoc_phan = hoc_phan.id_hoc_phan
+            and nhap_diem = 0 and loai_lop_hoc_phan = 0 
+                    and thoi_khoa_bieu.id_lop_hoc_phan = lop_hoc_phan.id_lop_hoc_phan 
+                    and giang_vien.id_giang_vien = thoi_khoa_bieu.id_giang_vien 
+                    and thoi_khoa_bieu.id_thoi_gian_hoc = thoi_gian.id_thoi_gian_hoc 
+                    and hoc_ky.id_hoc_ky = lop_hoc_phan.id_hoc_ky
+                    and dot_dang_ky.id_hoc_ky = hoc_ky.id_hoc_ky
+                    and dot_dang_ky.id_dot_dang_ky = 10
+                    AND Hoc_vien.id_chuyen_nganh=chuyen_nganh.id_chuyen_nganh
+                                AND chuong_trinh_dao_tao.id_chuong_trinh=hoc_phan_theo_ctdt.id_chuong_trinh
+                                AND chuyen_nganh.id_chuong_trinh=hoc_phan_theo_ctdt.id_chuong_trinh
+                                AND hoc_phan_theo_ctdt.id_hoc_phan=hoc_phan.id_hoc_phan
+                                AND hoc_vien.id_hoc_vien=15
+                                AND hoc_phan_theo_ctdt.id_hoc_phan !=(SELECT DISTINCT
+                   hoc_phan.id_hoc_phan
+            FROM `chuyen_nganh`, `hoc_vien`, `hoc_phan`, `hoc_phan_theo_ctdt`, `chuong_trinh_dao_tao`,`danh_sach_lop_hoc_phan`,lop_hoc_phan
+            WHERE hoc_vien.id_chuyen_nganh=chuyen_nganh.id_chuyen_nganh 
+            AND chuong_trinh_dao_tao.id_chuong_trinh=hoc_phan_theo_ctdt.id_chuong_trinh 
+            AND chuyen_nganh.id_chuong_trinh=hoc_phan_theo_ctdt.id_chuong_trinh 
+            AND hoc_phan_theo_ctdt.id_hoc_phan=hoc_phan.id_hoc_phan 
+            AND hoc_vien.id_hoc_vien=15
+            
+            AND danh_sach_lop_hoc_phan.id_hoc_vien=hoc_vien.id_hoc_vien 
+            AND danh_sach_lop_hoc_phan.id_lop_hoc_phan=lop_hoc_phan.id_lop_hoc_phan
+            AND lop_hoc_phan.id_hoc_phan= hoc_phan.id_hoc_phan 
+            ORDER BY `hoc_phan_theo_ctdt`.`hoc_ky` ASC)
+                    group by ma_lop_hoc_phan

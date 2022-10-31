@@ -1,0 +1,50 @@
+.btn {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.border {
+    border: 2px dotted #9E9E9E;
+}
+
+.itemXoa i {
+    font-size: 20px;
+    color: #222d32;
+}
+
+.itemXoa:hover i {
+    color: red;
+}
+
+.itemCapNhat i {
+    font-size: 18px;
+    color: #222d32;
+    margin-right: 5px;
+}
+
+.itemCapNhat:hover i {
+    color: #00a65a;
+}
+
+.itemXemThem i {
+    font-size: 18px;
+    color: #222d32;
+    margin-right: 5px;
+}
+.itemXemThem:hover i {
+    color: #00a65a;
+}
+.select2-container--default .select2-selection--multiple
+{
+    margin: 0 10px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li{
+    color: black;
+}
+
+.info-box {
+    color: black;
+}
+.info-box:hover {
+    color: #3c8dbc;
+}
